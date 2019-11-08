@@ -55,7 +55,53 @@ const createUser = (req, res) => {
 };
 
 const signinUser = (req, res) => {
-  
+  const user = {
+    email: req.body.email,
+    password: req.body.password,
+  };
+
+  const values = [
+    user.email,
+  ];
+
+  pool.query('SELECT id, email, password from users WHERE email = $1', values)
+    // eslint-disable-next-line consistent-return
+    .then((result) => {
+      bcrypt.compare(req.body.password, result.rows[0].password)
+        // eslint-disable-next-line consistent-return
+        .then((valid) => {
+          if (!valid) {
+            return res.status(200).json({
+              status: 'error',
+              message: 'Incorrect password!',
+            });
+          }
+          const token = jwt.sign(
+            { userId: result.rows[0].id },
+            'WHO_IS_KING_JIMMY',
+            { expiresIn: '24h' },
+          );
+          res.status(200).json({
+            status: 'success',
+            data: {
+              token,
+              userId: result.rows[0].id,
+            },
+          });
+        })
+        .catch(() => {
+          res.status(500).json({
+            status: 'error',
+            message: 'User account signin failed',
+          });
+        });
+    })
+    .catch(() => {
+      res.status(200).json({
+        status: 'error',
+        message: 'User not found!',
+      });
+    });
 };
 
 
