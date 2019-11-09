@@ -143,8 +143,45 @@ const deleteArticle = (req, res) => {
     });
 };
 
+const getArticle = (req, res) => {
+  let comments = [];
+  const query = {
+    text: 'SELECT * FROM articles WHERE id=$1;',
+    values: [req.params.id],
+  };
+  const queryOne = {
+    text: 'SELECT * FROM "commentsArticle" WHERE "articleId"=$1;',
+    values: [req.params.id],
+  };
+  pool.query(queryOne)
+    .then((resulte) => {
+      comments = resulte.rows;
+      pool.query(query)
+        .then((result) => {
+          res.status(200).json({
+            status: 'success',
+            data: {
+              id: result.rows[0].id,
+              createdOn: result.rows[0].createdOn,
+              title: result.rows[0].title,
+              article: result.rows[0].article,
+              comments,
+            },
+          });
+        })
+        .catch(() => {
+          res.status(400).json({
+            status: 'error',
+            message: 'Article post not found',
+          });
+        });
+    });
+};
+
+
 module.exports = {
   createArticle,
   editArticle,
   deleteArticle,
+  getArticle,
 };

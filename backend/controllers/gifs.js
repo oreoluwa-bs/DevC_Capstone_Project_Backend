@@ -94,7 +94,43 @@ const deleteGif = (req, res) => {
 };
 
 
+const getGif = (req, res) => {
+  let comments = [];
+  const query = {
+    text: 'SELECT * FROM gifs WHERE id=$1;',
+    values: [req.params.id],
+  };
+  const queryOne = {
+    text: 'SELECT * FROM "commentsGif" WHERE "gifId"=$1;',
+    values: [req.params.id],
+  };
+  pool.query(queryOne)
+    .then((resulte) => {
+      comments = resulte.rows;
+      pool.query(query)
+        .then((result) => {
+          res.status(200).json({
+            status: 'success',
+            data: {
+              id: result.rows[0].id,
+              createdOn: result.rows[0].createdOn,
+              title: result.rows[0].title,
+              url: result.rows[0].imageUrl,
+              comments,
+            },
+          });
+        })
+        .catch(() => {
+          res.status(400).json({
+            status: 'error',
+            message: 'Gif post not found',
+          });
+        });
+    });
+};
+
 module.exports = {
   postGif,
   deleteGif,
+  getGif,
 };
