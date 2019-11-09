@@ -38,7 +38,66 @@ const createArticle = (req, res) => {
     });
 };
 
+const editArticle = (req, res) => {
+  const articlePost = {
+    id: req.params.id,
+    title: req.body.title,
+    article: req.body.article,
+  };
+
+  const values = [
+    articlePost.id,
+    articlePost.title,
+    articlePost.article,
+  ];
+
+  const queryOne = {
+    text: 'SELECT * FROM articles WHERE id=$1;',
+    values: [req.params.id],
+  };
+
+  pool.query(queryOne)
+    .then((result) => {
+      const token = req.headers.authorization.split(' ')[1];
+      if (jwt.verify(token, 'WHO_IS_KING_JIMMY').userId === result.rows[0].authorId) {
+        const query = {
+          text: 'UPDATE articles SET title=$2, article=$3 WHERE id=$1;',
+          values,
+        };
+        pool.query(query)
+          .then(() => {
+            res.status(200).json({
+              status: 'success',
+              data: {
+                message: 'Article successfully updated',
+                title: result.rows[0].title,
+                article: result.rows[0].article,
+              },
+            });
+          })
+          .catch(() => {
+            res.status(400).json({
+              status: 'error',
+              message: 'Article update failed',
+            });
+          });
+      } else {
+        res.status(400).json({
+          status: 'error',
+          message: 'Authenticated user cannot update article',
+        });
+      }
+    })
+    .catch(() => {
+      res.status(400).json({
+        status: 'error',
+        message: 'Article not found',
+      });
+    });
+};
 
 module.exports = {
   createArticle,
+  editArticle,
+
 };

@@ -8,6 +8,8 @@ const router = express.Router();
 
 router.post('/', auth, db.createArticle);
 
+router.patch('/:id', auth, db.editArticle);
+
 
 
 module.exports = router;
