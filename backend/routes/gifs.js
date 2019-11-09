@@ -10,7 +10,7 @@ router.get('/:id', auth, db.getGif);
 
 router.post('/', auth, multer, db.postGif);
 
-
+router.delete('/:id', auth, db.deleteGif);
 
 
 module.exports = router;

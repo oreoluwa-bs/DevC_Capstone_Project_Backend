@@ -54,6 +54,47 @@ const postGif = (req, res) => {
     });
 };
 
+const deleteGif = (req, res) => {
+  const queryOne = {
+    text: 'SELECT * FROM gifs WHERE id=$1;',
+    values: [req.params.id],
+  };
+
+  pool.query(queryOne)
+    .then((result) => {
+      const token = req.headers.authorization.split(' ')[1];
+      if (jwt.verify(token, 'WHO_IS_KING_JIMMY').userId === result.rows[0].authorId) {
+        const query = {
+          text: 'DELETE FROM gifs WHERE id=$1;',
+          values: [req.params.id],
+        };
+        pool.query(query)
+          .then(() => {
+            res.status(200).json({
+              status: 'success',
+              data: {
+                message: 'Gif post successfully deleted',
+              },
+            });
+          })
+          .catch(() => {
+            res.status(500).json({
+              status: 'error',
+              message: 'Gif delete failed',
+            });
+          });
+      }
+    })
+    .catch(() => {
+      res.status(400).json({
+        status: 'error',
+        message: 'Gif not found',
+      });
+    });
+};
+
+
 module.exports = {
   postGif,
+  deleteGif,
 };

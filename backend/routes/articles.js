@@ -10,6 +10,7 @@ router.post('/', auth, db.createArticle);
 
 router.patch('/:id', auth, db.editArticle);
 
+router.delete('/:id', auth, db.deleteArticle);
 
 
 module.exports = router;
