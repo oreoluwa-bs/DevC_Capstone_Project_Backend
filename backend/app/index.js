@@ -4,6 +4,7 @@ const bodyParser = require('body-parser');
 const authRoutes = require('../routes/auth');
 const gifRoutes = require('../routes/gifs');
 const articleRoutes = require('../routes/articles');
+const feedRoutes = require('../routes/feed');
 
 const app = express();
 
@@ -26,5 +27,7 @@ app.use('/api/v1/auth', authRoutes);
 app.use('/api/v1/gifs', gifRoutes);
 
 app.use('/api/v1/articles', articleRoutes);
+
+app.use('/api/v1/feed', feedRoutes);
 
 module.exports = { app };

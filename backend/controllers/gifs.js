@@ -129,8 +129,42 @@ const getGif = (req, res) => {
     });
 };
 
+const commentGif = (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const commentPost = {
+    gifId: req.params.id,
+    commentId: req.body.commentId,
+    comment: req.body.comment,
+    authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
+    createdOn: Date.now(),
+  };
+
+  const values = [
+    commentPost.commentId,
+    commentPost.comment,
+    commentPost.gifId,
+    commentPost.authorId,
+    commentPost.createdOn,
+  ];
+
+  pool.query('INSERT INTO "commentsGif"(id, comment, "gifId", "authorId", "createdOn") VALUES($1, $2, $3, $4, $5);', values)
+    .then(() => {
+      res.status(200).json({
+        status: 'success',
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
+        status: 'error',
+        message: 'Could not post comment',
+        m: err,
+      });
+    });
+};
+
 module.exports = {
   postGif,
   deleteGif,
   getGif,
+  commentGif,
 };
