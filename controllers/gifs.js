@@ -12,10 +12,10 @@ cloudinary.config({
 const postGif = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const gifPost = {
-    id: req.body.id,
-    title: req.body.title,
+    id: req.body.id.trim(),
+    title: req.body.title.trim(),
     authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
-    createdOn: Date.now(),
+    createdOn: Date.now().trim(),
   };
   cloudinary.uploader.upload(`../backend/images/${req.file.filename}`)
     .then((result) => {
@@ -134,7 +134,7 @@ const commentGif = (req, res) => {
   const commentPost = {
     gifId: req.params.id,
     commentId: req.body.commentId,
-    comment: req.body.comment,
+    comment: req.body.comment.trim(),
     authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
     createdOn: Date.now(),
   };

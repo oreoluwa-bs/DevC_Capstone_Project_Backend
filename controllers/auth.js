@@ -4,18 +4,18 @@ const pool = require('./dbconnect');
 
 
 const createUser = (req, res) => {
-  bcrypt.hash(req.body.password, 10)
+  bcrypt.hash(req.body.password.trim(), 10)
     .then((hash) => {
       const user = {
         id: req.body.id,
-        firstname: req.body.firstname,
-        lastname: req.body.lastname,
-        email: req.body.email,
+        firstname: req.body.firstname.trim(),
+        lastname: req.body.lastname.trim(),
+        email: req.body.email.trim(),
         password: hash,
-        gender: req.body.gender,
-        jobrole: req.body.jobrole,
-        department: req.body.department,
-        address: req.body.address,
+        gender: req.body.gender.trim(),
+        jobrole: req.body.jobrole.trim(),
+        department: req.body.department.trim(),
+        address: req.body.address.trim(),
       };
       const values = [
         user.id,

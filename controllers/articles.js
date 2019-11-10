@@ -4,9 +4,9 @@ const pool = require('./dbconnect');
 const createArticle = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const articlePost = {
-    id: req.body.id,
-    title: req.body.title,
-    article: req.body.article,
+    id: req.body.id.trim(),
+    title: req.body.title.trim(),
+    article: req.body.article.trim(),
     authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
     createdOn: Date.now().toString(),
   };
@@ -184,7 +184,7 @@ const commentArticle = (req, res) => {
   const commentPost = {
     articleId: req.params.id,
     commentId: req.body.commentId,
-    comment: req.body.comment,
+    comment: req.body.comment.trim(),
     authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
     createdOn: Date.now(),
   };
