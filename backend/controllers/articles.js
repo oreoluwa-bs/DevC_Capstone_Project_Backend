@@ -179,9 +179,43 @@ const getArticle = (req, res) => {
 };
 
 
+const commentArticle = (req, res) => {
+  const token = req.headers.authorization.split(' ')[1];
+  const commentPost = {
+    articleId: req.params.id,
+    commentId: req.body.commentId,
+    comment: req.body.comment,
+    authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
+    createdOn: Date.now(),
+  };
+
+  const values = [
+    commentPost.commentId,
+    commentPost.comment,
+    commentPost.articleId,
+    commentPost.authorId,
+    commentPost.createdOn,
+  ];
+
+  pool.query('INSERT INTO "commentsArticle"(id, comment, "articleId", "authorId", "createdOn") VALUES($1, $2, $3, $4, $5);', values)
+    .then(() => {
+      res.status(200).json({
+        status: 'success',
+      });
+    })
+    .catch((err) => {
+      res.status(400).json({
+        status: 'error',
+        message: 'Could not post comment',
+        m: err,
+      });
+    });
+};
+
 module.exports = {
   createArticle,
   editArticle,
   deleteArticle,
   getArticle,
+  commentArticle,
 };
