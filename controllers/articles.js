@@ -1,14 +1,16 @@
 const jwt = require('jsonwebtoken');
 const pool = require('./dbconnect');
+const helpers = require('../helpers');
+const config = require('../config');
 
 const createArticle = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const articlePost = {
-    id: req.body.id.trim(),
+    id: helpers.uuidNum(),
     title: req.body.title.trim(),
     article: req.body.article.trim(),
-    authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
-    createdOn: Date.now().toString(),
+    authorId: jwt.verify(token, config.decrypt_me).userId,
+    createdOn: Date.now(),
   };
 
   const values = [
@@ -59,7 +61,7 @@ const editArticle = (req, res) => {
   pool.query(queryOne)
     .then((result) => {
       const token = req.headers.authorization.split(' ')[1];
-      if (jwt.verify(token, 'WHO_IS_KING_JIMMY').userId === result.rows[0].authorId) {
+      if (jwt.verify(token, config.decrypt_me).userId === result.rows[0].authorId) {
         const query = {
           text: 'UPDATE articles SET title=$2, article=$3 WHERE id=$1;',
           values,
@@ -105,7 +107,7 @@ const deleteArticle = (req, res) => {
   pool.query(queryOne)
     .then((result) => {
       const token = req.headers.authorization.split(' ')[1];
-      if (jwt.verify(token, 'WHO_IS_KING_JIMMY').userId === result.rows[0].authorId) {
+      if (jwt.verify(token, config.decrypt_me).userId === result.rows[0].authorId) {
         const query = {
           text: 'DELETE FROM articles WHERE id=$1;',
           values: [req.params.id],
@@ -183,9 +185,9 @@ const commentArticle = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const commentPost = {
     articleId: req.params.id,
-    commentId: req.body.commentId,
+    commentId: helpers.uuidNum(),
     comment: req.body.comment.trim(),
-    authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
+    authorId: jwt.verify(token, config.decrypt_me).userId,
     createdOn: Date.now(),
   };
 

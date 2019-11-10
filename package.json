@@ -1,13 +1,13 @@
 {
-  "name": "backend",
+  "name": "devcbackend",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is the backend for the devc teamwork application",
   "main": "server.js",
   "scripts": {
     "test": "jasmine",
     "start": "nodemon server.js"
   },
-  "author": "",
+  "author": "Oreoluwa Bimbo-Salami",
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.6",

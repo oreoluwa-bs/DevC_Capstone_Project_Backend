@@ -1,13 +1,15 @@
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const pool = require('./dbconnect');
+const helpers = require('../helpers');
+const config = require('../config');
 
 
 const createUser = (req, res) => {
   bcrypt.hash(req.body.password.trim(), 10)
     .then((hash) => {
       const user = {
-        id: req.body.id,
+        id: helpers.uuidNum(),
         firstname: req.body.firstname.trim(),
         lastname: req.body.lastname.trim(),
         email: req.body.email.trim(),
@@ -16,6 +18,7 @@ const createUser = (req, res) => {
         jobrole: req.body.jobrole.trim(),
         department: req.body.department.trim(),
         address: req.body.address.trim(),
+        createdOn: Date.now(),
       };
       const values = [
         user.id,
@@ -27,13 +30,14 @@ const createUser = (req, res) => {
         user.jobrole,
         user.department,
         user.address,
+        user.createdOn,
       ];
 
-      pool.query('INSERT INTO users(id, firstname, lastname, email, password, gender, jobrole, department, address) VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *', values)
+      pool.query('INSERT INTO users(id, firstname, lastname, email, password, gender, jobrole, department, address, "createdOn") VALUES($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *', values)
         .then(() => {
           const token = jwt.sign(
             { userId: user.id },
-            'WHO_IS_KING_JIMMY',
+            config.decrypt_me,
             { expiresIn: '24h' },
           );
           res.status(200).json({
@@ -78,7 +82,7 @@ const signinUser = (req, res) => {
           }
           const token = jwt.sign(
             { userId: result.rows[0].id },
-            'WHO_IS_KING_JIMMY',
+            config.decrypt_me,
             { expiresIn: '24h' },
           );
           res.status(200).json({

@@ -6,6 +6,7 @@ const db = require('../controllers/gifs');
 
 const router = express.Router();
 
+
 router.get('/:id', auth, db.getGif);
 
 router.post('/', auth, multer, db.postGif);

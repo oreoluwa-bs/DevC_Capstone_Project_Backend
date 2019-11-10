@@ -1,21 +1,23 @@
 const jwt = require('jsonwebtoken');
 const cloudinary = require('cloudinary').v2;
 const pool = require('./dbconnect');
+const helpers = require('../helpers');
+const config = require('../config');
 
 
 cloudinary.config({
-  cloud_name: 'ocloudn',
-  api_key: '178582552469755',
-  api_secret: '_SRPd4Fo7fFqXBZ2IkuZz6cuaLo',
+  cloud_name: config.cloudninary_cloud_name,
+  api_key: config.cloudninary_api_secret,
+  api_secret: config.cloudninary_api_secret,
 });
 
 const postGif = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const gifPost = {
-    id: req.body.id.trim(),
+    id: helpers.uuidNum(),
     title: req.body.title.trim(),
-    authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
-    createdOn: Date.now().trim(),
+    authorId: jwt.verify(token, config.decrypt_me).userId,
+    createdOn: Date.now(),
   };
   cloudinary.uploader.upload(`../backend/images/${req.file.filename}`)
     .then((result) => {
@@ -63,7 +65,7 @@ const deleteGif = (req, res) => {
   pool.query(queryOne)
     .then((result) => {
       const token = req.headers.authorization.split(' ')[1];
-      if (jwt.verify(token, 'WHO_IS_KING_JIMMY').userId === result.rows[0].authorId) {
+      if (jwt.verify(token, config.decrypt_me).userId === result.rows[0].authorId) {
         const query = {
           text: 'DELETE FROM gifs WHERE id=$1;',
           values: [req.params.id],
@@ -133,9 +135,9 @@ const commentGif = (req, res) => {
   const token = req.headers.authorization.split(' ')[1];
   const commentPost = {
     gifId: req.params.id,
-    commentId: req.body.commentId,
+    commentId: helpers.uuidNum(),
     comment: req.body.comment.trim(),
-    authorId: jwt.verify(token, 'WHO_IS_KING_JIMMY').userId,
+    authorId: jwt.verify(token, config.decrypt_me).userId,
     createdOn: Date.now(),
   };
 

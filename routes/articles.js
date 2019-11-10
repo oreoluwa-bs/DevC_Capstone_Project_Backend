@@ -6,6 +6,7 @@ const db = require('../controllers/articles');
 
 const router = express.Router();
 
+
 router.post('/', auth, db.createArticle);
 
 router.patch('/:id', auth, db.editArticle);
