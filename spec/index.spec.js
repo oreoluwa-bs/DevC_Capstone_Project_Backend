@@ -1,50 +1,67 @@
+// /* eslint-disable no-undef */
 const Request = require('request');
 
 describe('Server', () => {
-  let server,app;
+  let server;
 
   beforeAll(() => {
+    // eslint-disable-next-line global-require
     server = require('../server');
-    app = require('../app');
   });
 
   afterAll(() => {
-    // app.close();
+    server.close();
   });
 
-  describe('GET /', () => {
+  describe('GET /api/v1/gifs/1 when user is not authenticated', () => {
     const data = {};
-
     beforeAll((done) => {
-      Request.get(`http:/localhost:${process.env.PORT || 5000}/api/v1/gifs/1`, (error, res, body) => {
-        data.status = 200
-        // data.body = body;
+      Request.get(`http://localhost:${process.env.PORT || 5000}/api/v1/gifs/1`, (error, response, body) => {
+        data.status = response.statusCode;
+        data.body = JSON.parse(body);
         done();
       });
     });
-    it("Status 200", () => {
+    it('Status 200', () => {
       expect(data.status).toBe(200);
     });
-    it("Body", () => {
-      expect(data.status).toBe(200);
+    it('Body', () => {
+      expect(data.body).toEqual({
+        status: 'error',
+        message: 'User not authenticated',
+      });
     });
   });
 
-  describe('GET /', () => {
+  describe('POST /api/v1/auth/signin when user does not have an account', () => {
     const data = {};
-
     beforeAll((done) => {
-      Request.get(`http:/localhost:${process.env.PORT || 5000}/api/v1/articles/1`, (error, res, body) => {
-        data.status = 200;
-        // data.body = body;
+      // Request.post(`http://localhost:${process.env.PORT || 5000}/api/v1/auth/signin`, {
+      //   body: {
+      //     email: 'huse@gmail.com',
+      //     passoword: 'daadad',
+      //   },
+      // })
+    });
+  });
+
+  describe('GET /api/v1/feed/', () => {
+    const data = {};
+    beforeAll((done) => {
+      Request.get(`http://localhost:${process.env.PORT || 5000}/api/v1/feed/`, (error, response, body) => {
+        data.status = response.statusCode;
+        data.body = JSON.parse(body);
         done();
       });
     });
-    it("Status 200", () => {
+    it('Status 200', () => {
       expect(data.status).toBe(200);
     });
-    it("Body", () => {
-      expect(data.status).toBe(200);
+    it('Body', () => {
+      expect(data.body).toEqual({
+        status: 'error',
+        message: 'User not authenticated',
+      });
     });
   });
 });

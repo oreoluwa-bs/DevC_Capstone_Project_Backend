@@ -133,7 +133,7 @@ const deleteArticle = (req, res) => {
       } else {
         res.status(400).json({
           status: 'error',
-          message: 'Authenticated user cannot delete article',
+          message: 'Unauthenticated user cannot delete article',
         });
       }
     })
@@ -205,11 +205,10 @@ const commentArticle = (req, res) => {
         status: 'success',
       });
     })
-    .catch((err) => {
+    .catch(() => {
       res.status(400).json({
         status: 'error',
         message: 'Could not post comment',
-        m: err,
       });
     });
 };

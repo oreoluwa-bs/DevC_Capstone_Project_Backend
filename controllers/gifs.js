@@ -155,11 +155,10 @@ const commentGif = (req, res) => {
         status: 'success',
       });
     })
-    .catch((err) => {
+    .catch(() => {
       res.status(400).json({
         status: 'error',
         message: 'Could not post comment',
-        m: err,
       });
     });
 };

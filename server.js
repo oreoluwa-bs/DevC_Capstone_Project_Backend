@@ -7,3 +7,5 @@ app.set('port', process.env.PORT || config.port);
 const server = http.createServer(app);
 
 server.listen(process.env.PORT || config.port);
+
+module.exports = server;

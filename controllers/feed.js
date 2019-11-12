@@ -18,16 +18,16 @@ const getFeed = (req, res) => {
           });
         })
         .catch(() => {
-          res.status(500).json({
+          res.status(200).json({
             status: 'error',
-            message: 'Server error',
+            message: 'User not authenticated',
           });
         });
     })
     .catch(() => {
-      res.status(500).json({
+      res.status(200).json({
         status: 'error',
-        message: 'Server error',
+        message: 'User not authenticated',
       });
     });
 };
