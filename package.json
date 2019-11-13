@@ -5,7 +5,8 @@
   "main": "server.js",
   "scripts": {
     "test": "jasmine",
-    "start": "nodemon server.js"
+    "start": "nodemon server.js",
+    "coveralls": "./node_modules/coveralls/bin/coveralls.js"
   },
   "author": "Oreoluwa Bimbo-Salami",
   "license": "ISC",
@@ -20,6 +21,7 @@
     "request": "^2.88.0"
   },
   "devDependencies": {
+    "coveralls": "^3.0.7",
     "eslint": "^6.6.0",
     "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.18.2",
