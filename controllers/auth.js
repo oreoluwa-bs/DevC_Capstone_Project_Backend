@@ -50,7 +50,7 @@ const createUser = (req, res) => {
           });
         })
         .catch(() => {
-          res.json({
+          res.status(200).json({
             status: 'error',
             message: 'User account could not be created',
           });
@@ -77,7 +77,7 @@ const signinUser = (req, res) => {
           if (!valid) {
             return res.status(200).json({
               status: 'error',
-              message: 'Incorrect password!',
+              message: 'Incorrect password or email address. Try again!',
             });
           }
           const token = jwt.sign(
@@ -103,7 +103,7 @@ const signinUser = (req, res) => {
     .catch(() => {
       res.status(200).json({
         status: 'error',
-        message: 'User not found!',
+        message: 'Incorrect password or email address!',
       });
     });
 };
