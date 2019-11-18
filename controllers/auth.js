@@ -60,8 +60,8 @@ const createUser = (req, res) => {
 
 const signinUser = (req, res) => {
   const user = {
-    email: req.body.email,
-    password: req.body.password,
+    email: req.body.email.trim(),
+    password: req.body.password.trim(),
   };
 
   const values = [
