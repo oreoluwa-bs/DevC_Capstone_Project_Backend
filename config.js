@@ -8,7 +8,7 @@ module.exports = {
   decrypt_me: 'WHO_IS_KING_JIMMY',
   db_user: process.env.DB_USER || 'postgres',
   db_database: process.env.DB_DATABASE || 'teamwork_devcdb',
-  db_password: process.env.DB_PASSWORD || 'moriatyjim',
+  db_password: process.env.DB_PASSWORD || 'postgres',
   db_port: process.env.DB_PORT || 5432,
   port: 5000,
 };
