@@ -28,23 +28,32 @@ const postGif = (req, res) => {
         gifPost.authorId,
         gifPost.createdOn,
       ];
-      pool.query('INSERT INTO gifs(id, title, "imageUrl", "authorId", "createdOn") VALUES($1, $2, $3, $4, $5);', values)
-        .then(() => {
-          res.status(200).json({
-            status: 'success',
-            data: {
-              gifId: gifPost.id,
-              message: 'GIF image successfully posted',
-              createdOn: gifPost.createdOn,
-              title: gifPost.title,
-              imageUrl: result.secure_url,
-            },
-          });
+      pool.query('SELECT * FROM users WHERE id = $1', [gifPost.authorId])
+        .then((resulted) => {
+          pool.query('INSERT INTO articles(id, title, article, "authorId", "createdOn", "authorName") VALUES($1, $2, $3, $4, $5, $6);', [...values, `${resulted.rows[0].firstname} ${resulted.rows[0].lastname}`])
+            .then(() => {
+              res.status(200).json({
+                status: 'success',
+                data: {
+                  gifId: gifPost.id,
+                  message: 'GIF image successfully posted',
+                  createdOn: gifPost.createdOn,
+                  title: gifPost.title,
+                  imageUrl: result.secure_url,
+                },
+              });
+            })
+            .catch(() => {
+              res.status(500).json({
+                status: 'error',
+                message: 'GIF image post failed',
+              });
+            });
         })
         .catch(() => {
-          res.status(500).json({
+          res.status(200).json({
             status: 'error',
-            message: 'GIF image post failed',
+            message: 'Post could not be created',
           });
         });
     })

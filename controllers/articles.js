@@ -12,7 +12,6 @@ const createArticle = (req, res) => {
     authorId: jwt.verify(token, config.decrypt_me).userId,
     createdOn: Date.now(),
   };
-
   const values = [
     articlePost.id,
     articlePost.title,
@@ -20,22 +19,31 @@ const createArticle = (req, res) => {
     articlePost.authorId,
     articlePost.createdOn,
   ];
-  pool.query('INSERT INTO articles(id, title, article, "authorId", "createdOn") VALUES($1, $2, $3, $4, $5);', values)
-    .then(() => {
-      res.status(200).json({
-        status: 'success',
-        data: {
-          message: 'Article successfully posted',
-          articleId: articlePost.id,
-          createdOn: articlePost.createdOn,
-          title: articlePost.title,
-        },
-      });
+  pool.query('SELECT * FROM users WHERE id = $1', [articlePost.authorId])
+    .then((resulted) => {
+      pool.query('INSERT INTO articles(id, title, article, "authorId", "createdOn", "authorName") VALUES($1, $2, $3, $4, $5, $6);', [...values, `${resulted.rows[0].firstname} ${resulted.rows[0].lastname}`])
+        .then(() => {
+          res.status(200).json({
+            status: 'success',
+            data: {
+              message: 'Article successfully posted',
+              articleId: articlePost.id,
+              createdOn: articlePost.createdOn,
+              title: articlePost.title,
+            },
+          });
+        })
+        .catch(() => {
+          res.status(400).json({
+            status: 'error',
+            message: 'Article post failed',
+          });
+        });
     })
     .catch(() => {
-      res.status(400).json({
+      res.status(200).json({
         status: 'error',
-        message: 'Article post failed',
+        message: 'Post could not be created',
       });
     });
 };
