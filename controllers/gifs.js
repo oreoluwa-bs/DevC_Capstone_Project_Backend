@@ -30,7 +30,7 @@ const postGif = (req, res) => {
       ];
       pool.query('SELECT * FROM users WHERE id = $1', [gifPost.authorId])
         .then((resulted) => {
-          pool.query('INSERT INTO articles(id, title, article, "authorId", "createdOn", "authorName") VALUES($1, $2, $3, $4, $5, $6);', [...values, `${resulted.rows[0].firstname} ${resulted.rows[0].lastname}`])
+          pool.query('INSERT INTO gifs(id, title, article, "authorId", "createdOn", "authorName") VALUES($1, $2, $3, $4, $5, $6);', [...values, `${resulted.rows[0].firstname} ${resulted.rows[0].lastname}`])
             .then(() => {
               res.status(200).json({
                 status: 'success',
