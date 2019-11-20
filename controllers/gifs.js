@@ -19,7 +19,7 @@ const postGif = (req, res) => {
     authorId: jwt.verify(token, config.decrypt_me).userId,
     createdOn: Date.now(),
   };
-  cloudinary.uploader.upload(`../backend/images/${req.file.filename}`)
+  cloudinary.uploader.upload(`${config.imagesLocation}/${req.file.filename}`)
     .then((result) => {
       const values = [
         gifPost.id,
@@ -57,7 +57,8 @@ const postGif = (req, res) => {
           });
         });
     })
-    .catch(() => {
+    .catch((err) => {
+      console.log(err);
       res.status(400).json({
         status: 'error',
         message: 'GIF image post failed',
