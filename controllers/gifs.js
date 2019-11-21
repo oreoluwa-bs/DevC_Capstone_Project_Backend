@@ -159,16 +159,25 @@ const commentGif = (req, res) => {
     commentPost.createdOn,
   ];
 
-  pool.query('INSERT INTO "commentsGif"(id, comment, "gifId", "authorId", "createdOn") VALUES($1, $2, $3, $4, $5);', values)
-    .then(() => {
-      res.status(200).json({
-        status: 'success',
-      });
+  pool.query('SELECT * FROM users WHERE id = $1', [commentPost.authorId])
+    .then((resulted) => {
+      pool.query('INSERT INTO "commentsGif"(id, comment, "gifId", "authorId", "createdOn", "authorName") VALUES($1, $2, $3, $4, $5, $6);', [...values, `${resulted.rows[0].firstname} ${resulted.rows[0].lastname}`])
+        .then(() => {
+          res.status(200).json({
+            status: 'success',
+          });
+        })
+        .catch(() => {
+          res.status(400).json({
+            status: 'error',
+            message: 'Could not post comment',
+          });
+        });
     })
     .catch(() => {
       res.status(400).json({
         status: 'error',
-        message: 'Could not post comment',
+        message: 'Comment could not be posted',
       });
     });
 };
