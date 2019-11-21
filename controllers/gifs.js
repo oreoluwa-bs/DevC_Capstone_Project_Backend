@@ -19,7 +19,8 @@ const postGif = (req, res) => {
     authorId: jwt.verify(token, config.decrypt_me).userId,
     createdOn: Date.now(),
   };
-  cloudinary.uploader.upload(`${config.imagesLocation}/${req.file.filename}`)
+
+  cloudinary.uploader.upload(`./images/${req.file.filename}`)
     .then((result) => {
       const values = [
         gifPost.id,
