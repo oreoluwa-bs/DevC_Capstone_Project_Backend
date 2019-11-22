@@ -175,6 +175,7 @@ const getArticle = (req, res) => {
               createdOn: result.rows[0].createdOn,
               title: result.rows[0].title,
               article: result.rows[0].article,
+              authorName: result.rows[0].authorName,
               comments,
             },
           });

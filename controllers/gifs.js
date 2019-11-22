@@ -129,6 +129,8 @@ const getGif = (req, res) => {
               createdOn: result.rows[0].createdOn,
               title: result.rows[0].title,
               url: result.rows[0].imageUrl,
+              authorName: result.rows[0].authorName,
+              authorId: result.rows[0].authorId,
               comments,
             },
           });
