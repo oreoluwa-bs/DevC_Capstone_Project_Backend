@@ -14,7 +14,7 @@ const getFeed = (req, res) => {
 
           res.status(200).json({
             status: 'success',
-            data: [...articleFeed, ...gifFeed].sort((a, b) => b.createdOn - b.createdOn),
+            data: [...articleFeed, ...gifFeed].sort((a, b) => a.createdOn < b.createdOn),
           });
         })
         .catch(() => {
